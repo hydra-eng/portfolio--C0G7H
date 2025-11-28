@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D.V.S. Saaketh | Cyber Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              primary: '#0f0',
+              'primary-dim': '#008f11',
+              dark: '#000',
+              'bg-dark': '#050505',
+            }
+          }
+        },
+        darkMode: 'class',
+      }
+    </script>
+    <style>
+      :root {
+        --primary: #0f0;
+        --primary-dim: #008f11;
+        --dark: #000;
+        --bg-dark: #050505;
+      }
+
+      body {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: var(--dark);
+        color: #e0e0e0;
+        overflow-x: hidden;
+        cursor: none; /* Custom cursor used */
+      }
+
+      /* --- CUSTOM CURSOR --- */
+      .cursor-dot,
+      .cursor-outline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        z-index: 9999;
+        pointer-events: none;
+      }
+
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary);
+        box-shadow: 0 0 10px var(--primary);
+      }
+
+      .cursor-outline {
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--primary);
+        box-shadow: 0 0 5px var(--primary-dim);
+        transition: width 0.2s, height 0.2s, background-color 0.2s;
+      }
+
+      /* --- CRT MONITOR EFFECTS --- */
+      .scanlines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(
+          to bottom,
+          rgba(18, 16, 16, 0) 50%,
+          rgba(0, 0, 0, 0.25) 50%
+        );
+        background-size: 100% 4px;
+        pointer-events: none;
+        z-index: 50;
+      }
+
+      .vignette {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 100%);
+        pointer-events: none;
+        z-index: 49;
+      }
+
+      .screen-flicker {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 255, 0, 0.02);
+        opacity: 0;
+        z-index: 48;
+        pointer-events: none;
+        animation: flicker 0.15s infinite;
+      }
+
+      @keyframes flicker {
+        0% { opacity: 0.02; }
+        50% { opacity: 0.05; }
+        100% { opacity: 0.02; }
+      }
+
+      /* --- CYBER GRID --- */
+      .cyber-grid {
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background-image: 
+          linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+        background-size: 50px 50px;
+        transform: perspective(500px) rotateX(60deg);
+        z-index: -2;
+        animation: grid-move 20s linear infinite;
+      }
+
+      @keyframes grid-move {
+        0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+        100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+      }
+
+      /* --- UI COMPONENTS --- */
+      .terminal-card {
+        background-color: rgba(5, 10, 5, 0.85);
+        border: 1px solid #1a1a1a;
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.05);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+      }
+
+      .terminal-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
+        transform: translateY(-5px) scale(1.01);
+        background-color: rgba(5, 15, 5, 0.95);
+      }
+
+      .nav-link:hover {
+        text-shadow: 0 0 8px var(--primary);
+        color: var(--primary);
+      }
+
+      #matrix-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.25;
+      }
+
+      .typing-cursor::after {
+        content: '█';
+        animation: blink 1s step-end infinite;
+        color: var(--primary);
+        margin-left: 2px;
+      }
+
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #000; }
+      ::-webkit-scrollbar-thumb { background: #1a1a1a; border: 1px solid var(--primary-dim); }
+      ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+      .project-image-container {
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      .project-image-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 255, 65, 0.1), rgba(0, 0, 0, 0.9));
+        pointer-events: none;
+      }
+      .project-image {
+        filter: grayscale(100%) contrast(1.2);
+        transition: all 0.5s ease;
+      }
+      .terminal-card:hover .project-image {
+        filter: grayscale(0%) contrast(1);
+        transform: scale(1.05);
+      }
+
+      /* CRT Power-On Animation */
+      .crt-power-on {
+        animation: crtOn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        opacity: 0;
+        transform-origin: center;
+      }
+
+      @keyframes crtOn {
+        0% { transform: scaleY(0.005) scaleX(0); opacity: 0; filter: brightness(0); }
+        30% { transform: scaleY(0.005) scaleX(1); opacity: 1; filter: brightness(20) contrast(5); }
+        60% { transform: scaleY(0.005) scaleX(1); filter: brightness(5); }
+        100% { transform: scaleY(1) scaleX(1); opacity: 1; filter: brightness(1); }
+      }
+
+      /* Magnetic Name */
+      .hacker-name-container {
+        display: inline-block;
+        position: relative;
+        cursor: default;
+        user-select: none;
+      }
+      .hacker-char {
+        display: inline-block;
+        transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), color 0.2s;
+        position: relative;
+        z-index: 20;
+        will-change: transform;
+      }
+      .hacker-char:hover {
+        color: var(--primary);
+        text-shadow: 0 0 15px var(--primary);
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "vite": "https://aistudiocdn.com/vite@^7.2.4"
+  }
+}
+</script>
+</head>
+  <body class="selection:bg-green-900 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

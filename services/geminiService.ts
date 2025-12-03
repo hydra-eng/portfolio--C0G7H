@@ -1,10 +1,7 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { HERO_DATA, ABOUT_TEXT, SKILLS, PROJECTS, EXPERIENCE_DETAILS, RESUME_EXTRA } from '../constants';
 
-// Initialize the API client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
-const MODEL_NAME = "gemini-2.5-flash";
+const MODEL_NAME = "gemini-1.5-flash";
 
 // Construct a system prompt based on the portfolio data
 const SYSTEM_INSTRUCTION = `
@@ -32,6 +29,14 @@ export const streamChatResponse = async (
   newMessage: string
 ): Promise<AsyncGenerator<string, void, unknown>> => {
   try {
+    const apiKey = import.meta.env.VITE_API_KEY;
+    if (!apiKey) {
+      throw new Error("API Key is missing. Please set VITE_API_KEY in your .env file.");
+    }
+
+    // Initialize the API client lazily to avoid crash on load if key is missing
+    const ai = new GoogleGenAI({ apiKey });
+
     const chat = ai.chats.create({
       model: MODEL_NAME,
       config: {
@@ -58,7 +63,7 @@ export const streamChatResponse = async (
   } catch (error) {
     console.error("Gemini API Error:", error);
      return (async function* () {
-      yield "Connection interrupted. Re-establishing link...";
+      yield "Connection interrupted. Please check API configuration.";
     })();
   }
 };
